@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4ecdd;
+  --card-line:#e3d6bd;
+  --ink:#26221d;
+  --ink-soft:#5d5142;
+  --muted:#97876c;
+  --dark:#221f1b;
+  --dark-2:#2d2924;
+  --gold:#c69a5b;
+  --paper:#fbf6ea;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.55;
+}
+a{color:inherit}
+img{display:block}
+button{font-family:inherit;cursor:pointer}
+
+/* ───── 상단바 ───── */
+.topbar{background:var(--dark);color:#f2e9d6;border-bottom:1px solid rgba(198,154,91,.35)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:26px;flex-wrap:wrap}
+.logo{font-family:'Cormorant Garamond',Georgia,serif;font-size:40px;font-weight:600;letter-spacing:.14em;text-decoration:none;line-height:1}
+.logo .dot{color:var(--gold)}
+.logo small{display:block;font-family:'Noto Sans KR',sans-serif;font-size:11px;letter-spacing:.32em;color:#b7a888;margin-top:6px;font-weight:400}
+.search-area{display:flex;flex-direction:column;gap:8px;min-width:260px}
+.search-box{display:flex}
+.search-box input{
+  flex:1;border:none;padding:11px 14px;font-size:14px;background:#fff;color:var(--ink);
+  font-family:inherit;outline:none;min-width:0;
+}
+.search-box input:focus{box-shadow:inset 0 0 0 2px var(--gold)}
+.search-box button{
+  background:var(--gold);border:none;color:var(--dark);padding:0 16px;display:flex;align-items:center;
+}
+.hot{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#cabfa5}
+.hot a{text-decoration:none}
+.hot a:hover{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+
+/* ───── 카테고리 내비 (대분류만) ───── */
+.gnb{background:var(--dark-2);position:sticky;top:0;z-index:80;border-bottom:2px solid var(--gold)}
+.gnb ul{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;list-style:none}
+.gnb li>a{
+  display:block;padding:15px 22px;color:#ece2cc;text-decoration:none;
+  font-size:15px;font-weight:500;letter-spacing:.02em;white-space:nowrap;
+}
+.gnb li>a:hover,.gnb li.on>a{background:var(--bg);color:var(--ink);font-weight:700}
+
+/* ───── 데모 안내 ───── */
+.demo-note{background:#efe0c2;border-bottom:1px solid #dcc79c;color:#6a5636;
+  font-size:13px;text-align:center;padding:10px 16px;line-height:1.6}
+.demo-note b{color:#4a3a1f}
+
+/* ───── 본문 ───── */
+main{max-width:1200px;margin:0 auto;padding:44px 20px 90px;min-height:60vh}
+.sec-head h1{text-align:center;font-size:27px;font-weight:700;letter-spacing:.06em}
+.crumb{text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:10px;letter-spacing:.05em}
+.deco{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px;
+  font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-style:italic;color:var(--muted)}
+.deco span{width:74px;height:1px;background:#cbba97}
+.count{font-size:13px;color:var(--muted);margin:30px 0 14px}
+
+/* ───── 상품 그리드 ───── */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:36px 22px;align-items:start}
+.card{display:flex;flex-direction:column;text-decoration:none}
+.thumb{position:relative;padding-top:100%;overflow:hidden;background:#fff;border:1px solid var(--card-line)}
+.thumb img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.card:hover .thumb img{transform:scale(1.05)}
+.badge{position:absolute;top:10px;left:10px;z-index:2;background:var(--dark);color:var(--gold);
+  font-size:10.5px;font-weight:700;letter-spacing:.14em;padding:4px 9px}
+.pname{margin-top:12px;font-size:14px;line-height:1.4;color:var(--ink-soft);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  min-height:2.8em}
+.card:hover .pname{text-decoration:underline;text-underline-offset:3px}
+.pprice{margin-top:6px;font-size:17.5px;font-weight:800}
+.pprice .won{font-size:13px;font-weight:700;margin-right:1px;color:var(--ink-soft)}
+.pprice .ask{font-size:14px;font-weight:600;color:var(--muted)}
+.empty{text-align:center;padding:90px 0;color:var(--muted);font-size:15px}
+
+/* ───── 페이지 번호 ───── */
+#pager{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;margin-top:50px}
+.pg-btn{min-width:38px;height:38px;padding:0 12px;border:1px solid var(--card-line);background:var(--paper);
+  color:var(--ink-soft);font-size:14px;border-radius:6px;cursor:pointer;transition:all .15s}
+.pg-btn:hover:not(:disabled):not(.on){border-color:var(--ink);color:var(--ink)}
+.pg-btn.on{background:var(--dark);color:#f2e7cf;border-color:var(--dark);font-weight:700;cursor:default}
+.pg-btn:disabled{opacity:.4;cursor:not-allowed}
+.pg-dots{color:var(--muted);padding:0 2px}
+
+/* ───── 맨 위로 버튼 ───── */
+#toTop{position:fixed;right:26px;bottom:26px;width:48px;height:48px;border-radius:50%;
+  background:var(--dark);color:var(--gold);border:1px solid var(--gold);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;z-index:200;
+  box-shadow:0 6px 18px rgba(20,16,10,.35);opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .25s, transform .25s, visibility .25s}
+#toTop.show{opacity:1;visibility:visible;transform:translateY(0)}
+#toTop:hover{background:var(--gold);color:var(--dark)}
+@media(max-width:720px){ #toTop{right:16px;bottom:16px;width:44px;height:44px} }
+
+/* ───── 상품 상세 ───── */
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;
+  font-size:14px;color:var(--ink-soft);text-decoration:none;padding:4px 0;margin-bottom:20px}
+.back:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.detail{display:grid;grid-template-columns:minmax(0,460px) 1fr;gap:48px;align-items:start}
+.d-img{position:relative;padding-top:100%;overflow:hidden;border:1px solid var(--card-line);background:#fff}
+.d-img img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+.d-cat{font-size:13px;color:var(--muted);letter-spacing:.04em}
+.d-info h1{font-size:23px;font-weight:700;margin:10px 0 16px;line-height:1.35}
+.d-price{font-size:30px;font-weight:800;padding-bottom:20px;border-bottom:1px solid #ddcdab;margin-bottom:20px}
+.d-price .won{font-size:19px;color:var(--ink-soft);margin-right:2px}
+.d-meta{border-collapse:collapse;font-size:14px}
+.d-meta th{text-align:left;font-weight:500;color:var(--muted);padding:7px 22px 7px 0;vertical-align:top;white-space:nowrap}
+.d-meta td{padding:7px 0;color:var(--ink-soft)}
+.sec2{margin-top:76px}
+.sec2 h2{font-size:19px;font-weight:700;padding-bottom:12px;border-bottom:2px solid var(--ink);margin-bottom:26px;letter-spacing:.04em}
+.d-cut{width:100%;max-width:760px;margin:0 auto 14px;border:1px solid var(--card-line)}
+
+/* ───── 반응형 ───── */
+@media(max-width:1000px){ .grid{grid-template-columns:repeat(3,1fr)} }
+@media(max-width:720px){
+  .topbar-inner{flex-direction:column;align-items:stretch;text-align:center;gap:16px}
+  .search-area{min-width:0}
+  .hot{justify-content:center}
+  .gnb li>a{padding:13px 14px;font-size:14px}
+  .grid{grid-template-columns:repeat(2,1fr);gap:26px 14px}
+  .detail{grid-template-columns:1fr;gap:28px}
+  main{padding-top:32px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="#/">shop<span class="dot">.</span><small>WHOLESALE&nbsp;MALL</small></a>
+    <div class="search-area">
+      <div class="search-box">
+        <input id="searchInput" type="search" placeholder="상품명 또는 상품번호 검색" aria-label="상품 검색">
+        <button id="searchBtn" type="button" aria-label="검색">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg>
+        </button>
+      </div>
+      <nav class="hot" aria-label="인기 검색어" id="hotArea">인기</nav>
+    </div>
+  </div>
+</header>
+
+<nav class="gnb" aria-label="카테고리">
+  <ul id="gnbList"></ul>
+</nav>
+
+<div id="demoNote"></div>
+
+<main id="app"></main>
+
+<button id="toTop" aria-label="맨 위로" title="맨 위로">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M5 12l7-7 7 7"/></svg>
+</button>
+
+<!-- 목록만들기.html로 만든 상품 목록 파일. 이 파일이 옆에 있으면 자동으로 읽습니다. -->
+<script src="list.js"></script>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   ★  코드 수정 없이 폴더로만 관리하는 쇼핑몰 (대분류만)  ★
+   (인기 검색어를 바꾸고 싶을 때만 아래 SHOP을 수정하세요)
+
+   상품·카테고리는 코드가 아니라 "폴더"로 관리합니다.
+     1) 폴더 규칙대로 사진 정리
+        쇼핑몰폴더 / 대분류 / 상품명_가격 / 사진들
+        (대분류 폴더는 01_가방, 02_가방2 처럼 번호를 붙이면 그 순서대로 메뉴에 표시)
+     2) 목록만들기.html 열어서 쇼핑몰 폴더 선택 → list.js 다운로드
+     3) list.js를 이 index.html 옆에 넣고 폴더째 Netlify에 드래그
+   list.js가 없으면 아래 DEMO 상품이 대신 표시됩니다.
+════════════════════════════════════════════════════════════ */
+
+const SHOP = {
+  hotKeywords: ["헤어슈슈", "숄더백", "니트", "특가"],       // 인기 검색어 (자유롭게 수정)
+};
+
+/* ─── 데모 데이터 (list.js가 없을 때만 보임 / 지워도 됨) ─── */
+function ph(text, bg, fg){
+  fg = fg || "#7d6c52";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900"><rect width="100%" height="100%" fill="${bg}"/><g font-family="sans-serif" text-anchor="middle" fill="${fg}"><text x="450" y="438" font-size="46" font-weight="700">${text}</text><text x="450" y="500" font-size="25" opacity=".65">사진을 넣어 주세요</text></g></svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+function phT(text, bg, fg){
+  fg = fg || "#7d6c52";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1150"><rect width="100%" height="100%" fill="${bg}"/><g font-family="sans-serif" text-anchor="middle" fill="${fg}"><text x="450" y="560" font-size="44" font-weight="700">${text}</text><text x="450" y="620" font-size="25" opacity=".65">상세페이지 사진을 넣어 주세요</text></g></svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+const DEMO = {
+  categories: ["가방", "가방2", "의류", "악세사리", "의류악세2", "잡화", "뷰티2", "특가상품"],
+  products: [
+    { no:5165, name:"퀼팅 체인 숄더백", price:15800, cat:"가방",
+      images:[ph("퀼팅 숄더백","#38322b","#d9ccb2"), phT("상세컷 01","#453e35","#d9ccb2"), phT("상세컷 02","#e5dac3")] },
+    { no:5164, name:"미니 크로스백", price:12900, cat:"가방",
+      images:[ph("미니 크로스백","#c9b493"), phT("상세컷 01","#dbcbab")] },
+    { no:5163, name:"데일리 캔버스 에코백", price:9900, cat:"가방2",
+      images:[ph("캔버스 에코백","#e3d8c0"), phT("상세컷 01","#ede4d0")] },
+    { no:5162, name:"베이직 라운드 니트", price:14500, cat:"의류",
+      images:[ph("라운드 니트","#d6c6a8"), phT("상세컷 01","#e4d8bf"), phT("컬러 안내","#eee5d2")] },
+    { no:5161, name:"오버핏 울 가디건", price:18900, cat:"의류",
+      images:[ph("울 가디건","#b9a685"), phT("상세컷 01","#cdbc9c")] },
+    { no:5160, name:"새틴 리본 헤어슈슈 3종 세트", price:6300, cat:"악세사리",
+      images:[ph("새틴 헤어슈슈","#dcc9af"), phT("상세컷 01","#e9dec9"), phT("상세컷 02","#d3c2a6")] },
+    { no:5159, name:"진주 포인트 드롭 귀걸이", price:7900, cat:"악세사리",
+      images:[ph("진주 귀걸이","#ece3d2"), phT("착용컷","#e0d5be")] },
+    { no:5158, name:"레이스 프릴 헤어슈슈", price:5900, cat:"의류악세2",
+      images:[ph("레이스 헤어슈슈","#e7dbc5"), phT("상세컷 01","#f0e8d6")] },
+    { no:5157, name:"코듀로이 볼캡", price:7900, cat:"잡화",
+      images:[ph("코듀로이 볼캡","#40382e","#d9ccb2"), phT("상세컷 01","#4b4237","#d9ccb2")] },
+    { no:5156, name:"실크터치 스퀘어 스카프", price:8900, cat:"잡화",
+      images:[ph("스퀘어 스카프","#e9dfca"), phT("연출컷","#dccfb2")] },
+    { no:5155, name:"모이스처 립밤 3종 세트", price:4900, cat:"뷰티2",
+      images:[ph("립밤 3종","#e4cdbb"), phT("성분 안내","#efdfd2")] },
+    { no:5154, name:"[특가] 데일리 양말 5족 세트", price:3900, cat:"특가상품",
+      images:[ph("양말 5족 세트","#d9cdb2"), phT("구성 안내","#e6dcc6")] },
+    { no:5153, name:"[특가] 벨벳 와이드 헤어밴드", price:2900, cat:"특가상품",
+      images:[ph("벨벳 헤어밴드","#c9b795"), phT("컬러 안내","#eae0cb")] },
+  ]
+};
+
+/* ═══════════════ 여기서부터는 사이트 동작 코드 (수정 불필요) ═══════════════ */
+
+const HAS_LIST = !!(window.SHOP_DATA && Array.isArray(window.SHOP_DATA.products) && window.SHOP_DATA.products.length);
+const RAW = HAS_LIST ? window.SHOP_DATA : DEMO;
+
+const safeSrc = s => (typeof s === "string" && s.startsWith("data:")) ? s : encodeURI(s || "");
+const CATEGORIES = (RAW.categories || []).map(c => (typeof c === "string" ? c : c.name));
+const PRODUCTS = (RAW.products || []).map((p, i) => {
+  const images = (p.images || []).map(safeSrc);
+  const main = images[0] || ph("사진 없음", "#e5dac3");
+  return {
+    uid: i + 1,
+    no: (p.no === 0 || p.no) ? p.no : null,
+    name: p.name || "이름 없음",
+    price: (p.price === 0 || p.price) ? +p.price : null,
+    category: p.cat,
+    badge: i < 8 ? "NEW" : null,
+    mainImage: main,
+    detailImages: images.length > 1 ? images.slice(1) : [main],
+  };
+});
+
+const $ = s => document.querySelector(s);
+const enc = encodeURIComponent;
+const won = n => n.toLocaleString("ko-KR");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let lastListHash = "#/";
+
+if (!HAS_LIST) {
+  $("#demoNote").innerHTML = `<div class="demo-note">지금 보이는 상품은 <b>데모</b>입니다 —
+  <b>목록만들기.html</b>로 폴더를 읽어 <b>list.js</b>를 만든 뒤 index.html 옆에 넣으면 실제 상품으로 바뀝니다.</div>`;
+}
+
+/* 인기 검색어 */
+$("#hotArea").innerHTML = "인기 " + SHOP.hotKeywords.map(k =>
+  `<a href="#/s/${enc(k)}">${esc(k)}</a>`).join(" ");
+
+/* 내비게이션 — 대분류만, 펼침 메뉴 없음 */
+function renderNav(active){
+  let html = `<li class="${active===null?"on":""}"><a href="#/">메인</a></li>`;
+  for(const name of CATEGORIES){
+    html += `<li class="${active===name?"on":""}"><a href="#/c/${enc(name)}">${esc(name)}</a></li>`;
+  }
+  $("#gnbList").innerHTML = html;
+}
+
+/* 공용 조각 */
+function secHead(title, sub, crumb){
+  return `${crumb?`<div class="crumb">${crumb}</div>`:""}
+    <div class="sec-head"><h1>${esc(title)}</h1>
+    <div class="deco"><span></span>${esc(sub)}<span></span></div></div>`;
+}
+function priceHtml(p){
+  return p.price===null ? `<span class="ask">가격 문의</span>`
+    : `<span class="won">₩</span>${won(p.price)}`;
+}
+function labelOf(p){ return (p.no!==null ? p.no + "번 - " : "") + p.name; }
+function cardHtml(p){
+  return `<a class="card" href="#/p/${p.uid}">
+    <div class="thumb">${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}
+      <img src="${p.mainImage}" alt="${esc(p.name)}" loading="lazy"></div>
+    <div class="pname">${esc(labelOf(p))}</div>
+    <div class="pprice">${priceHtml(p)}</div></a>`;
+}
+
+/* 그리드 — 한 페이지에 48개씩, 아래 페이지 번호로 이동 */
+const PER_PAGE = 48;
+let gridList = [], curPage = 1;
+function gridShell(list){
+  if(!list.length) return `<p class="empty">등록된 상품이 없습니다.</p>`;
+  return `<div class="count">총 ${list.length}개 상품</div><div class="grid" id="grid"></div><div id="pager"></div>`;
+}
+function mountGrid(list){
+  gridList = list; curPage = 1;
+  renderPage();
+}
+function renderPage(){
+  const g = $("#grid");
+  if(!g) return;
+  const totalPages = Math.max(1, Math.ceil(gridList.length / PER_PAGE));
+  if(curPage > totalPages) curPage = totalPages;
+  const start = (curPage - 1) * PER_PAGE;
+  const pageItems = gridList.slice(start, start + PER_PAGE);
+  g.innerHTML = pageItems.map(cardHtml).join("");
+  renderPager(totalPages);
+}
+function renderPager(totalPages){
+  const p = $("#pager");
+  if(!p) return;
+  if(totalPages <= 1){ p.innerHTML = ""; return; }
+  // 현재 페이지 주변 번호만 노출 (양옆 2개)
+  const nums = [];
+  const win = 2;
+  let lo = Math.max(1, curPage - win), hi = Math.min(totalPages, curPage + win);
+  if(curPage <= win) hi = Math.min(totalPages, 1 + win*2);
+  if(curPage > totalPages - win) lo = Math.max(1, totalPages - win*2);
+  let html = "";
+  html += `<button class="pg-btn" data-go="${curPage-1}" ${curPage===1?"disabled":""}>‹ 이전</button>`;
+  if(lo > 1){
+    html += `<button class="pg-btn" data-go="1">1</button>`;
+    if(lo > 2) html += `<span class="pg-dots">…</span>`;
+  }
+  for(let i=lo;i<=hi;i++){
+    html += `<button class="pg-btn ${i===curPage?"on":""}" data-go="${i}">${i}</button>`;
+  }
+  if(hi < totalPages){
+    if(hi < totalPages-1) html += `<span class="pg-dots">…</span>`;
+    html += `<button class="pg-btn" data-go="${totalPages}">${totalPages}</button>`;
+  }
+  html += `<button class="pg-btn" data-go="${curPage+1}" ${curPage===totalPages?"disabled":""}>다음 ›</button>`;
+  p.innerHTML = html;
+  p.querySelectorAll(".pg-btn").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const go = +b.dataset.go;
+      if(!go || go < 1 || go > totalPages || go === curPage) return;
+      curPage = go;
+      renderPage();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+}
+function gridStatic(list){
+  return `<div class="grid">${list.map(cardHtml).join("")}</div>`;
+}
+
+/* 화면들 — 목록 화면은 [html, 상품목록]을 돌려줌 */
+function viewHome(){
+  return [secHead("신상품","New") + gridShell(PRODUCTS), PRODUCTS];
+}
+function viewCategory(cat){
+  const list = PRODUCTS.filter(p => p.category===cat);
+  return [secHead(cat, "Collection", `홈 &gt; ${esc(cat)}`) + gridShell(list), list];
+}
+function viewSearch(q){
+  const key = q.toLowerCase();
+  const list = PRODUCTS.filter(p =>
+    p.name.toLowerCase().includes(key) || (p.no!==null && String(p.no).includes(key)));
+  return [secHead(`'${q}' 검색결과`, "Search") + gridShell(list), list];
+}
+function viewDetail(uid){
+  const p = PRODUCTS.find(x=>x.uid===uid);
+  if(!p) return `<p class="empty">상품을 찾을 수 없습니다.</p>`;
+  const related = PRODUCTS.filter(x=>x.category===p.category && x.uid!==p.uid).slice(0,4);
+  return `
+  <a class="back" href="${lastListHash}">← 목록으로</a>
+  <div class="detail">
+    <div class="d-img"><img src="${p.mainImage}" alt="${esc(p.name)}"></div>
+    <div class="d-info">
+      <div class="d-cat">${esc(p.category)}</div>
+      <h1>${esc(labelOf(p))}</h1>
+      <div class="d-price">${p.price===null?`가격 문의`:`<span class="won">₩</span>${won(p.price)}`}</div>
+      ${p.no!==null?`<table class="d-meta"><tr><th>상품번호</th><td>${p.no}</td></tr></table>`:""}
+    </div>
+  </div>
+  <section class="sec2"><h2>상세페이지</h2>
+    ${p.detailImages.map(src=>`<img class="d-cut" src="${src}" loading="lazy" alt="${esc(p.name)} 상세 이미지">`).join("")}
+  </section>
+  ${related.length?`<section class="sec2"><h2>같은 카테고리 상품</h2>${gridStatic(related)}</section>`:""}`;
+}
+
+/* 해시 라우터 */
+function parseHash(){
+  const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
+  if(!parts.length) return {view:"home"};
+  if(parts[0]==="c") return {view:"category", cat:parts[1]};
+  if(parts[0]==="p") return {view:"detail", uid:+parts[1]};
+  if(parts[0]==="s") return {view:"search", q:parts[1]||""};
+  return {view:"home"};
+}
+function render(){
+  const r = parseHash();
+  let html = "", list = null, active = null;
+  if(r.view==="category"){ [html, list] = viewCategory(r.cat); active = r.cat; lastListHash = location.hash; }
+  else if(r.view==="detail"){ const p = PRODUCTS.find(x=>x.uid===r.uid); html = viewDetail(r.uid); active = p?p.category:null; }
+  else if(r.view==="search"){ [html, list] = viewSearch(r.q); $("#searchInput").value = r.q; lastListHash = location.hash; }
+  else { [html, list] = viewHome(); lastListHash = "#/"; }
+  $("#app").innerHTML = html;
+  if(list) mountGrid(list);
+  renderNav(active);
+  window.scrollTo(0,0);
+}
+
+/* 검색 */
+function doSearch(){
+  const q = $("#searchInput").value.trim();
+  if(q) location.hash = "#/s/" + enc(q);
+}
+$("#searchBtn").addEventListener("click", doSearch);
+$("#searchInput").addEventListener("keydown", e=>{ if(e.key==="Enter") doSearch(); });
+
+window.addEventListener("hashchange", render);
+render();
+
+/* 맨 위로 버튼 — 조금 내려가면 나타나고, 누르면 위로 */
+const toTop = $("#toTop");
+function onScroll(){
+  if(window.scrollY > 500) toTop.classList.add("show");
+  else toTop.classList.remove("show");
+}
+window.addEventListener("scroll", onScroll, {passive:true});
+toTop.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+onScroll();
+</script>
+</body>
+</html>
